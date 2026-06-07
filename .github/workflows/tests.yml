@@ -17,13 +17,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Helpful for debugging: shows which Xcode / SDKs the runner has.
-      - name: Xcode version
-        run: xcodebuild -version
+      # The project targets iOS 26, so we need an Xcode that ships that SDK.
+      # Select the newest Xcode installed on the runner and show what we got.
+      - name: Select newest Xcode
+        run: |
+          echo "Installed Xcodes:"
+          ls -d /Applications/Xcode*.app || true
+          NEWEST=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          echo "Selecting: $NEWEST"
+          sudo xcode-select -s "$NEWEST/Contents/Developer"
+          xcodebuild -version
+          echo "Available iPhone simulators:"
+          xcrun simctl list devices available | grep -i iphone || echo "(none)"
 
       - name: Run tests
         run: |
+          # Pick the first available iPhone simulator by UDID (no name guessing).
+          UDID=$(xcrun simctl list devices available | grep -m1 'iPhone' | grep -oE '[0-9A-F-]{36}')
+          echo "Testing on simulator: $UDID"
           xcodebuild test \
             -scheme Trippi \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+            -destination "id=$UDID" \
             CODE_SIGNING_ALLOWED=NO
