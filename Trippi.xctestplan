@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "A1CD7D63-89D2-4453-8929-ECDBF829B5C2",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Trippi.xcodeproj",
+      "identifier" : "499274672FD485D000B59BC9",
+      "name" : "Trippi"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Trippi.xcodeproj",
+        "identifier" : "499274782FD485D200B59BC9",
+        "name" : "TrippiTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Trippi.xcodeproj",
+        "identifier" : "499274822FD485D200B59BC9",
+        "name" : "TrippiUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
