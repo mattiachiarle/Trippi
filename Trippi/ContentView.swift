@@ -10,7 +10,7 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var trips: [Trip]
+    @Query(sort: \Trip.startDate) private var trips: [Trip]
 
     var body: some View {
         NavigationSplitView {
@@ -20,17 +20,17 @@ struct ContentView: View {
                         Text("\(trip.name) \(trip.startDate, format: Date.FormatStyle(date: .numeric, time: .standard))-\(trip.endDate, format: Date.FormatStyle(date: .numeric, time: .standard))")
                     } label: {
                         VStack(alignment: .leading) {
-                                Text(trip.name)
-                                Text(trip.startDate, format: Date.FormatStyle(date: .abbreviated))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                            Text(trip.name)
+                            Text(trip.startDate, format: Date.FormatStyle(date: .abbreviated))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
                 .onDelete(perform: deleteTrips)
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
@@ -46,7 +46,7 @@ struct ContentView: View {
 
     private func addTrip() {
         withAnimation {
-            let newTrip = Trip(name: "New Trip", startDate: Date(), endDate: Date())
+            let newTrip = Trip(name: "New Trip", startDate: Date.now, endDate: Date.now)
             modelContext.insert(newTrip)
         }
     }
