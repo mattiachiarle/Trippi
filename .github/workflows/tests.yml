@@ -17,25 +17,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # The project targets iOS 26, so we need an Xcode that ships that SDK.
-      # Select the newest Xcode installed on the runner and show what we got.
+      # The project targets iOS 26, but the runner's DEFAULT Xcode is 16.x,
+      # which lacks that SDK. Select the newest installed Xcode (26.x).
       - name: Select newest Xcode
         run: |
-          echo "Installed Xcodes:"
-          ls -d /Applications/Xcode*.app || true
-          NEWEST=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
-          echo "Selecting: $NEWEST"
-          sudo xcode-select -s "$NEWEST/Contents/Developer"
+          sudo xcode-select -s "$(ls -d /Applications/Xcode*.app | sort -V | tail -1)/Contents/Developer"
           xcodebuild -version
-          echo "Available iPhone simulators:"
-          xcrun simctl list devices available | grep -i iphone || echo "(none)"
 
-      - name: Run tests
+      - name: Build and test
         run: |
-          # Pick the first available iPhone simulator by UDID (no name guessing).
-          UDID=$(xcrun simctl list devices available | grep -m1 'iPhone' | grep -oE '[0-9A-F-]{36}')
-          echo "Testing on simulator: $UDID"
+          # Resolve the first available iPhone simulator by NAME (per GitHub's
+          # official iOS starter workflow). xctrace prints to stderr, hence 2>&1.
+          device=$(xcrun xctrace list devices 2>&1 \
+            | grep -oE 'iPhone.*?[^\(]+' | head -1 \
+            | awk '{$1=$1;print}' | sed -e "s/ Simulator$//")
+          echo "Using simulator: $device"
           xcodebuild test \
+            -project Trippi.xcodeproj \
             -scheme Trippi \
-            -destination "id=$UDID" \
+            -destination "platform=iOS Simulator,name=$device" \
             CODE_SIGNING_ALLOWED=NO
