@@ -11,6 +11,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Trip.startDate) private var trips: [Trip]
+    @State private var showingAddTrip = false
 
     var body: some View {
         NavigationSplitView {
@@ -34,20 +35,16 @@ struct ContentView: View {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addTrip) {
+                    Button { showingAddTrip = true } label: {
                         Label("Add Trip", systemImage: "plus")
                     }
                 }
             }
+            .sheet(isPresented: $showingAddTrip) {
+                AddTripView()
+            }
         } detail: {
             Text("Select a trip")
-        }
-    }
-
-    private func addTrip() {
-        withAnimation {
-            let newTrip = Trip(name: "New Trip", startDate: Date.now, endDate: Date.now)
-            modelContext.insert(newTrip)
         }
     }
 

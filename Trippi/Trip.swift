@@ -19,4 +19,8 @@ final class Trip {
         self.startDate = startDate
         self.endDate = endDate
     }
+
+    static func isValid(name: String, startDate: Date, endDate: Date) -> Bool {
+        !name.isEmpty && startDate <= endDate
+    }
 }

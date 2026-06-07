@@ -7,13 +7,25 @@
 
 import Testing
 @testable import Trippi
+import Foundation
 
 struct TrippiTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        // Swift Testing Documentation
-        // https://developer.apple.com/documentation/testing
+    @Test func validTrip() {
+        #expect(Trip.isValid(name: "Rome", startDate: Date.now, endDate: Date.now.addingTimeInterval(86_400)))
+    }
+
+    @Test func emptyNameIsInvalid() {
+        #expect(!Trip.isValid(name: "", startDate: Date.now, endDate: Date.now))
+    }
+
+    @Test func startAfterEndIsInvalid() {
+        #expect(!Trip.isValid(name: "Rome", startDate: Date.now.addingTimeInterval(86_400), endDate: Date.now))
+    }
+
+    @Test func sameStartAsEndIsValid() {
+        let date = Date.now
+        #expect(Trip.isValid(name: "Rome", startDate: date, endDate: date))
     }
 
 }
