@@ -1,0 +1,20 @@
+#!/bin/sh
+# Auto-fix staged Swift files with SwiftLint before each commit.
+# Enabled via:  git config core.hooksPath .githooks
+
+# GUI git clients (and Xcode's commit UI) often run with a minimal PATH that
+# excludes Homebrew, so add it explicitly.
+export PATH="/opt/homebrew/bin:$PATH"
+
+# If SwiftLint isn't installed, don't block the commit — just skip.
+command -v swiftlint >/dev/null 2>&1 || { echo "swiftlint not found; skipping lint-fix."; exit 0; }
+
+# Staged Swift files only (Added/Copied/Modified — ignore deletions).
+staged=$(git diff --cached --name-only --diff-filter=ACM -- '*.swift')
+[ -z "$staged" ] && exit 0
+
+# Auto-correct each, then re-stage so the fixes are part of this commit.
+echo "$staged" | while IFS= read -r file; do
+  swiftlint --fix --quiet "$file"
+  git add "$file"
+done
