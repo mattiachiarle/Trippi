@@ -1,0 +1,26 @@
+# === macOS ===
+.DS_Store
+
+# === Xcode: user-specific state (never commit) ===
+xcuserdata/
+*.xcuserstate
+
+# === Xcode: build products ===
+DerivedData/
+build/
+*.xcarchive
+*.dSYM
+*.dSYM.zip
+*.ipa
+*.hmap
+*.moved-aside
+
+# === Swift Package Manager ===
+.build/
+.swiftpm/
+
+# Note: Trippi.xcodeproj/project.xcworkspace/xcshareddata/ is intentionally
+# NOT ignored — shared schemes should be committed.
+
+# === Project-specific ===
+CLAUDE.md

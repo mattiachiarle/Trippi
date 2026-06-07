@@ -1,0 +1,27 @@
+# SwiftLint configuration for Trippi
+# Full rule list: https://realm.github.io/SwiftLint/rule-directory.html
+# Run manually with:  swiftlint        (lint)
+#                     swiftlint --fix  (auto-correct what it can)
+
+# Which folders to lint (paths are relative to this file).
+included:
+  - Trippi
+  - TrippiTests
+  - TrippiUITests
+
+# Folders to ignore (build output, etc.).
+excluded:
+  - .build
+  - DerivedData
+
+# Rules that are NOT enabled by default but are worth having on a learning project.
+opt_in_rules:
+  - empty_count          # prefer `x.isEmpty` over `x.count == 0`
+  - first_where          # prefer `.first(where:)` over `.filter { }.first`
+  - toggle_bool          # prefer `flag.toggle()` over `flag = !flag`
+  - force_unwrapping     # flag risky `!` force-unwraps (educational: makes you see every one)
+
+# Line length: warn early, but don't fail the build until it's truly long.
+line_length:
+  warning: 120
+  error: 200
