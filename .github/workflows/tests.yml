@@ -1,0 +1,29 @@
+name: Tests
+
+# Build and run the test suite on every push to main and every pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# If you push again before a run finishes, cancel the older run.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Helpful for debugging: shows which Xcode / SDKs the runner has.
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -scheme Trippi \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+            CODE_SIGNING_ALLOWED=NO
