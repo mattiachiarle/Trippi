@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4962134A2FD61D630090DB01 /* Trippi.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = file; path = Trippi.xctestplan; sourceTree = "<group>"; };
+		4962134A2FD61D630090DB01 /* Trippi.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trippi.xctestplan; sourceTree = "<group>"; };
 		499274682FD485D000B59BC9 /* Trippi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trippi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		499274792FD485D200B59BC9 /* TrippiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrippiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		499274832FD485D200B59BC9 /* TrippiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrippiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };

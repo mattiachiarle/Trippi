@@ -14,15 +14,13 @@ struct ContentView: View {
     @State private var showingAddTrip = false
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             List {
                 ForEach(trips) { trip in
-                    NavigationLink {
-                        Text("\(trip.name) \(trip.startDate, format: Date.FormatStyle(date: .numeric, time: .standard))-\(trip.endDate, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
+                    NavigationLink(value: trip) {
                         VStack(alignment: .leading) {
                             Text(trip.name)
-                            Text(trip.startDate, format: Date.FormatStyle(date: .abbreviated))
+                            Text("\((trip.startDate..<trip.endDate).formatted(date: .abbreviated, time: .omitted))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -30,6 +28,7 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteTrips)
             }
+            .navigationDestination(for: Trip.self) { trip in TripCalendarView(trip: trip) }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
@@ -43,8 +42,6 @@ struct ContentView: View {
             .sheet(isPresented: $showingAddTrip) {
                 AddTripView()
             }
-        } detail: {
-            Text("Select a trip")
         }
     }
 
