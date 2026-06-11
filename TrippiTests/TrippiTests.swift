@@ -30,20 +30,20 @@ struct TrippiTests {
 
 }
 
+/// A fixed calendar so results don't depend on the machine's region settings.
+private let calendar: Calendar = {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "Europe/Rome") ?? .current
+    calendar.locale =  Locale(identifier: "en_US")
+    return calendar
+}()
+
+/// Builds an exact date; falls back to .distantPast so a bad input fails the test loudly.
+private func date(_ year: Int, _ month: Int, _ day: Int, _ hour: Int = 0) -> Date {
+    calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour)) ?? .distantPast
+}
+
 struct CalendarWeeksTests {
-
-    /// A fixed calendar so results don't depend on the machine's region settings.
-    private let calendar: Calendar = {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "Europe/Rome") ?? .current
-        return calendar
-    }()
-
-    /// Builds an exact date; falls back to .distantPast so a bad input fails the test loudly.
-    private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
-        calendar.date(from: DateComponents(year: year, month: month, day: day)) ?? .distantPast
-    }
-
     @Test func mondayToSundayTripIsOneFullWeek() {
         // June 15, 2026 is a Monday; June 21 is the following Sunday.
         let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2026, 6, 21))
@@ -86,18 +86,6 @@ struct CalendarWeeksTests {
 }
 
 struct ContainsTests {
-    /// A fixed calendar so results don't depend on the machine's region settings.
-    private let calendar: Calendar = {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(identifier: "Europe/Rome") ?? .current
-        return calendar
-    }()
-
-    /// Builds an exact date; falls back to .distantPast so a bad input fails the test loudly.
-    private func date(_ year: Int, _ month: Int, _ day: Int, _ hour: Int = 0) -> Date {
-        calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour)) ?? .distantPast
-    }
-
     @Test func dayInside() {
         let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2026, 6, 21))
         #expect(trip.contains(day: date(2026, 6, 18), in: calendar))
@@ -121,5 +109,27 @@ struct ContainsTests {
     @Test func dayAfter() {
         let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2026, 6, 21))
         #expect(!trip.contains(day: date(2026, 6, 22), in: calendar))
+    }
+}
+
+struct MonthLabelTests {
+    @Test func sameMonthAndYear() {
+        let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2026, 6, 21))
+        #expect(trip.monthLabel(in: calendar) == "June")
+    }
+
+    @Test func differentMonths() {
+        let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2026, 7, 21))
+        #expect(trip.monthLabel(in: calendar) == "June - July")
+    }
+
+    @Test func crossYear() {
+        let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2027, 1, 21))
+        #expect(trip.monthLabel(in: calendar) == "June - January")
+    }
+
+    @Test func sameMonthDifferentYear() {
+        let trip = Trip(name: "Rome", startDate: date(2026, 6, 15), endDate: date(2027, 6, 21))
+        #expect(trip.monthLabel(in: calendar) == "June - June")
     }
 }

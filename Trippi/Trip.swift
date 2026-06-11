@@ -50,4 +50,11 @@ final class Trip {
 
         return dayToCheck >= tripStart && dayToCheck <= tripEnd
     }
+
+    func monthLabel(in calendar: Calendar = .current) -> String {
+        let start = startDate.formatted(.dateTime.month(.wide).locale(calendar.locale ?? .current))
+        let end = endDate.formatted(.dateTime.month(.wide).locale(calendar.locale ?? .current))
+        return calendar.isDate(startDate, equalTo: endDate, toGranularity: .month)
+        ? start : "\(start) - \(end)"
+    }
 }
